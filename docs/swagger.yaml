@@ -1,8 +1,34 @@
 definitions:
+  entity.Character:
+    properties:
+      cost:
+        type: integer
+      count:
+        type: integer
+      description:
+        type: string
+      hp:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      power:
+        type: integer
+      rarity:
+        type: integer
+      speed:
+        type: integer
+    type: object
   schema.CreateUserPayload:
     properties:
       name:
         type: string
+    type: object
+  schema.DrawGachaPayload:
+    properties:
+      count:
+        type: integer
     type: object
   schema.NameResponse:
     properties:
@@ -21,6 +47,70 @@ info:
   title: GachaAPI
   version: "1.0"
 paths:
+  /character/list:
+    get:
+      consumes:
+      - application/json
+      description: ユーザが所持しているキャラクター一覧情報を取得
+      parameters:
+      - description: 認証トークン
+        in: header
+        name: x-token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Character'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: キャラクター関連API
+      tags:
+      - character
+  /gacha/draw:
+    post:
+      consumes:
+      - application/json
+      description: ガチャを引いてキャラクターを取得する処理
+      parameters:
+      - description: 認証トークン
+        in: header
+        name: x-token
+        required: true
+        type: string
+      - description: ガチャを引く
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.DrawGachaPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Character'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: ガチャ実行API
+      tags:
+      - gacha
   /user/create:
     post:
       consumes:
