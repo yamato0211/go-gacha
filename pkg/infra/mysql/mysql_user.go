@@ -34,7 +34,7 @@ func (ur *userRepository) Insert(ctx context.Context, name string, token string)
 	return token, nil
 }
 
-func (ur *userRepository) GetByName(ctx context.Context, token string) (string, error) {
+func (ur *userRepository) SelectNameByToken(ctx context.Context, token string) (string, error) {
 	var user entity.User
 	err := ur.DB.Get(&user, "select * from users where token = ?;", token)
 	if err != nil {
@@ -42,6 +42,16 @@ func (ur *userRepository) GetByName(ctx context.Context, token string) (string, 
 	}
 
 	return user.Name, nil
+}
+
+func (ur *userRepository) SelectIDByToken(ctx context.Context, token string) (int64, error) {
+	var user entity.User
+	err := ur.DB.Get(&user, "select * from users where token = ?;", token)
+	if err != nil {
+		return 0, err
+	}
+
+	return user.ID, nil
 }
 
 func (ur *userRepository) Update(ctx context.Context, name string, token string) error {

@@ -5,8 +5,12 @@ import (
 	"go-gacha-system/pkg/infra/mysql"
 	"go-gacha-system/pkg/usecase"
 
+	_ "go-gacha-system/docs"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func InitRouter() *gin.Engine {
@@ -23,6 +27,7 @@ func InitRouter() *gin.Engine {
 		user.POST("/create", handler.CreateUser())
 		user.PUT("/update", handler.UpdateName())
 	}
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

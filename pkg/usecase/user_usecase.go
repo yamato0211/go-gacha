@@ -34,7 +34,7 @@ func (uu *userUsecase) CreateUser(ctx context.Context, name string) (string, err
 }
 
 func (uu *userUsecase) GetUser(ctx context.Context, token string) (string, error) {
-	name, err := uu.repo.GetByName(ctx, token)
+	name, err := uu.repo.SelectNameByToken(ctx, token)
 	if err != nil {
 		return "", err
 	}
