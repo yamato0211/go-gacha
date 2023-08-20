@@ -34,9 +34,9 @@ func (ur *userRepository) Insert(ctx context.Context, name string, token string)
 	return token, nil
 }
 
-func (ur *userRepository) SelectNameByToken(ctx context.Context, token string) (string, error) {
+func (ur *userRepository) SelectNameByUserID(ctx context.Context, userID int64) (string, error) {
 	var user entity.User
-	err := ur.DB.Get(&user, "select * from users where token = ?;", token)
+	err := ur.DB.Get(&user, "select * from users where id = ?;", userID)
 	if err != nil {
 		return "", err
 	}
@@ -54,12 +54,12 @@ func (ur *userRepository) SelectIDByToken(ctx context.Context, token string) (in
 	return user.ID, nil
 }
 
-func (ur *userRepository) Update(ctx context.Context, name string, token string) error {
-	sql := `update users set name = :name where token = :token;`
+func (ur *userRepository) Update(ctx context.Context, name string, userID int64) error {
+	sql := `update users set name = :name where id = :id;`
 
 	in := entity.User{
-		Token: token,
-		Name:  name,
+		ID:   userID,
+		Name: name,
 	}
 
 	_, err := ur.DB.NamedExec(sql, in)
