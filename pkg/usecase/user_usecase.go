@@ -9,8 +9,8 @@ import (
 
 type IUserUsecase interface {
 	CreateUser(ctx context.Context, name string) (string, error)
-	UpdateName(ctx context.Context, name string, token string) error
-	GetUser(ctx context.Context, token string) (string, error)
+	UpdateName(ctx context.Context, name string, userID int64) error
+	GetUser(ctx context.Context, userID int64) (string, error)
 }
 
 type userUsecase struct {
@@ -33,8 +33,8 @@ func (uu *userUsecase) CreateUser(ctx context.Context, name string) (string, err
 	return token, nil
 }
 
-func (uu *userUsecase) GetUser(ctx context.Context, token string) (string, error) {
-	name, err := uu.repo.SelectNameByToken(ctx, token)
+func (uu *userUsecase) GetUser(ctx context.Context, userID int64) (string, error) {
+	name, err := uu.repo.SelectNameByUserID(ctx, userID)
 	if err != nil {
 		return "", err
 	}
@@ -42,8 +42,8 @@ func (uu *userUsecase) GetUser(ctx context.Context, token string) (string, error
 	return name, nil
 }
 
-func (uu *userUsecase) UpdateName(ctx context.Context, name string, token string) error {
-	err := uu.repo.Update(ctx, name, token)
+func (uu *userUsecase) UpdateName(ctx context.Context, name string, userID int64) error {
+	err := uu.repo.Update(ctx, name, userID)
 	if err != nil {
 		return err
 	}
