@@ -3,6 +3,7 @@ package http
 import (
 	"go-gacha-system/pkg/usecase"
 	"go-gacha-system/pkg/usecase/schema"
+	"go-gacha-system/pkg/utils"
 	"log"
 	"net/http"
 
@@ -33,13 +34,8 @@ func NewUserHandler(usecase usecase.IUserUsecase) *userHandler {
 //	@Router			/user/get [get]
 func (uh *userHandler) GetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("x-token")
-		if token == "" {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "x-token not found",
-			})
-		}
-		name, err := uh.usecase.GetUser(c, token)
+		userID := utils.GetUserIDFromContext(c)
+		name, err := uh.usecase.GetUser(c, userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err.Error())
 		}
@@ -95,6 +91,8 @@ func (uh *userHandler) CreateUser() gin.HandlerFunc {
 //	@Router			/user/update [put]
 func (uh *userHandler) UpdateName() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		userID := utils.GetUserIDFromContext(c)
+
 		var createUser schema.CreateUserPayload
 		err := c.ShouldBindJSON(&createUser)
 		if err != nil {
@@ -102,15 +100,7 @@ func (uh *userHandler) UpdateName() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		token := c.Request.Header.Get("x-token")
-		if token == "" {
-			log.Print("x-token not found")
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "x-token not found",
-			})
-		}
-
-		err = uh.usecase.UpdateName(c, createUser.Name, token)
+		err = uh.usecase.UpdateName(c, createUser.Name, userID)
 		if err != nil {
 			log.Print(err.Error())
 			c.JSON(http.StatusInternalServerError, err.Error())
