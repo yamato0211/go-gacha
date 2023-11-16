@@ -10,8 +10,8 @@ type MySQLInfo struct {
 	MySQLDBName   string
 }
 
-type TokenInfo struct {
-	SecretKey string
+type RedisInfo struct {
+	Addr string
 }
 
 func LoadDBConfig() *MySQLInfo {
@@ -29,10 +29,10 @@ func LoadDBConfig() *MySQLInfo {
 	}
 }
 
-func LoadTokenConfig() *TokenInfo {
-	secretKey := getEnv("SECRET_KEY", "secret")
-	return &TokenInfo{
-		SecretKey: secretKey,
+func LoadRedisConfig() *RedisInfo {
+	redisAddr := getEnv("REDIS_ADDR", "redis:6379")
+	return &RedisInfo{
+		Addr: redisAddr,
 	}
 }
 

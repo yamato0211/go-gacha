@@ -5,6 +5,8 @@ definitions:
         type: integer
       count:
         type: integer
+      created_at:
+        type: string
       description:
         type: string
       hp:
@@ -18,6 +20,19 @@ definitions:
       rarity:
         type: integer
       speed:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entity.Ranking:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      rank:
+        type: integer
+      score:
         type: integer
     type: object
   schema.CreateUserPayload:
@@ -111,6 +126,64 @@ paths:
       summary: ガチャ実行API
       tags:
       - gacha
+  /ranking/mysql:
+    get:
+      consumes:
+      - application/json
+      description: Mysqlからランキングを取得する処理
+      parameters:
+      - description: 取得個数
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Ranking'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Mysqlランキング取得API
+      tags:
+      - ranking
+  /ranking/redis:
+    get:
+      consumes:
+      - application/json
+      description: Redisからランキングを取得する処理
+      parameters:
+      - description: 取得個数
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Ranking'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Redisランキング取得API
+      tags:
+      - ranking
   /user/create:
     post:
       consumes:
