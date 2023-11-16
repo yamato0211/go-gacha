@@ -18,6 +18,26 @@ func NewCharacterRepository(db *sqlx.DB) repository.CharacterRepository {
 	}
 }
 
+func (cr *characterRepository) SelectAll(ctx context.Context) ([]*entity.Character, error) {
+	var characters []*entity.Character
+	query := "select * from characters;"
+	if err := cr.DB.Select(&characters, query); err != nil {
+		return nil, err
+	}
+
+	return characters, nil
+}
+
+func (cr *characterRepository) SelectAllOrderOffset(ctx context.Context, limit int64) ([]*entity.Character, error) {
+	var characters []*entity.Character
+	query := "select * from characters order by power desc limit ?;"
+	if err := cr.DB.Select(&characters, query, limit); err != nil {
+		return nil, err
+	}
+
+	return characters, nil
+}
+
 func (cr *characterRepository) SelectAllByID(ctx context.Context, userID int64) ([]entity.Character, error) {
 	var characters []entity.Character
 	query := `
